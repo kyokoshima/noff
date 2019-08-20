@@ -1,5 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:noff/views/item.dart';
 import '../compoinents/target_list_storage.dart';
 
 class Home extends StatefulWidget {
@@ -68,8 +70,11 @@ class HomeState extends State<Home> {
         itemCount: _list.length,
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => {
-          print("FAB press"),
+        onPressed: () {
+          print("FAB press");
+          Navigator.push(context, 
+          CupertinoPageRoute(fullscreenDialog: true, builder: (context) => Item()));
+          
         },
       ),
     );
