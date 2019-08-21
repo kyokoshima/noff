@@ -15,7 +15,7 @@ class Home extends StatefulWidget {
 }
 
 class HomeState extends State<Home> {
-  List<Map> _list;
+  List<Map> _list = [];
   @override
   void initState() {
     super.initState();
@@ -23,13 +23,14 @@ class HomeState extends State<Home> {
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown
     ]);
-    widget.storage.readList().then((List<Map> list)
-      {
-        setState(() {
-          _list = list;
-        });
-      }
-    );
+    // widget.storage.readList().then((List<Map> list)
+    //   {
+    //     setState(() {
+    //       _list = list;
+    //     });
+    //   }
+    // );
+    _list.add({ "name" : "aaaa"});
   }
   @override
   void dispose() {
@@ -40,6 +41,12 @@ class HomeState extends State<Home> {
       DeviceOrientation.landscapeRight
     ]);
     super.dispose();
+  }
+  Map<String, String> addList(Map<String, String> item) {
+    setState(() {_list.add(item); });
+  }
+  void removeItem(Map<String, String> item) {
+    setState(() { _list.remove(item); });
   }
   @override
   Widget build(BuildContext context) {
@@ -72,8 +79,9 @@ class HomeState extends State<Home> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           print("FAB press");
-          Navigator.push(context, 
-          CupertinoPageRoute(fullscreenDialog: true, builder: (context) => Item()));
+          Navigator.push(context, MaterialPageRoute(builder: (context) => Item(parent: this)));
+          // Navigator.push(context, 
+          // CupertinoPageRoute(fullscreenDialog: true, builder: (context) => Item(parent: this)));
           
         },
       ),
