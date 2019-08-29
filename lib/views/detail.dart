@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_colorpicker/block_picker.dart';
-import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:noff/model/item.dart';
 
 import 'home.dart';
 
 @immutable
-class Item extends StatelessWidget {
-  const Item({Key key, @required this.parent}) : super(key: key);
+class Detail extends StatelessWidget {
+  const Detail({Key key, @required this.parent, Color color}) : super(key: key);
   final HomeState parent;
   @override
   Widget build(BuildContext context) {
@@ -74,10 +74,11 @@ class ItemFormState extends State<ItemForm> {
                     RaisedButton(
                       onPressed: () {
                         if (_formKey.currentState.validate()) {
-                          widget.parent.addList({
-                            'name': _nameController.text,
-                            'color': itemColor
-                          });
+                          final Item item = Item(
+                              name: _nameController.text,
+                              color: itemColor,
+                              on: true);
+                          widget.parent.addList(item);
                           Navigator.pop(context);
                         }
                       },

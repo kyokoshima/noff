@@ -26,6 +26,7 @@ dependencies:
   path_provider: ^1.2.0
   flutter_colorpicker: any
   uuid: any
+  tinycolor: any
 
 dev_dependencies:
   flutter_test:

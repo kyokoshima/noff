@@ -1,9 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:noff/views/item.dart';
+import 'package:noff/model/item.dart';
+import 'package:tinycolor/tinycolor.dart';
 import 'package:uuid/uuid.dart';
 import '../compoinents/target_list_storage.dart';
+import 'detail.dart';
 
 class Home extends StatefulWidget {
   const Home({Key key, @required this.storage}) : super(key: key);
@@ -16,7 +18,7 @@ class Home extends StatefulWidget {
 }
 
 class HomeState extends State<Home> {
-  final List<Map<String, dynamic>> _list = [];
+  final Map<String, Item> _list = {};
   @override
   void initState() {
     super.initState();
@@ -29,7 +31,7 @@ class HomeState extends State<Home> {
     //     });
     //   }
     // );
-    _list.add({'key': Uuid().v1(), 'name': 'aaaa', 'color': Colors.red});
+    _list[Uuid().v1()] = Item(name: 'aaaa', color: Colors.red, on: true);
   }
 
   @override
@@ -43,15 +45,21 @@ class HomeState extends State<Home> {
     super.dispose();
   }
 
-  Map<String, dynamic> addList(Map<String, dynamic> item) {
+  Map<String, dynamic> addList(Item item) {
     setState(() {
-      _list.add(item);
+      _list[Uuid().v1()] = item;
     });
   }
 
-  void removeItem(Map<String, dynamic> item) {
+  void removeItem(String key) {
     setState(() {
-      _list.remove(item);
+      _list.remove(key);
+    });
+  }
+
+  void updateItem(String key, Item newItem) {
+    setState(() {
+      _list[key] = newItem;
     });
   }
 
@@ -72,22 +80,30 @@ class HomeState extends State<Home> {
       appBar: appBar,
       body: ListView.builder(
         itemBuilder: (BuildContext context, int index) {
-          final Map<String, dynamic> item = _list[index];
-          final String name = item['name'];
-          final Color color = item['color'];
+          final String itemKey = _list.keys.elementAt(index);
+          final Item item = _list[itemKey];
+          final String name = item.name;
+          final Color color =
+              item.on ? item.color : TinyColor(item.color).darken(30).color;
           return Card(
             color: color,
             child: Dismissible(
               key: Key(index.toString()),
               onDismissed: (direction) {
                 setState(() {
-                  removeItem(item);
+                  removeItem(itemKey);
                 });
               },
               child: InkWell(
-                onTap: () {},
+                onTap: () {
+                  setState(() {
+                    final Item newItem =
+                        Item(name: item.name, color: item.color, on: !item.on);
+                    updateItem(itemKey, newItem);
+                  });
+                },
                 child: Padding(
-                  padding: const EdgeInsets.all(1.0),
+                  padding: const EdgeInsets.only(top: 10.0, left: 20.0),
                   child: Container(
                     height: height / 5,
                     child: Text(
@@ -108,7 +124,7 @@ class HomeState extends State<Home> {
           Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (BuildContext context) => Item(parent: this),
+                builder: (BuildContext context) => Detail(parent: this),
                 maintainState: false,
                 fullscreenDialog: true),
           );
